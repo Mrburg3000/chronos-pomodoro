@@ -9,6 +9,7 @@ import { getNextCycleType } from "../../utils/getNextCycleType";
 import type { TaskModel } from "../models/TaskModel";
 import { TaskActionTypes } from "../../contexts/TaskContext/taskAction";
 import { Tips } from "../Tips";
+import { showMessage } from "../../adapters/showMessage";
 
 export function MainForm() {
   const { dispatch, state } = useTaskContext();
@@ -25,7 +26,7 @@ export function MainForm() {
     const taskName = taskNameInput.current.value.trim();
 
     if (!taskName) {
-      alert("Digite o nome da tarefa");
+      showMessage.warn("Digite o nome da tarefa");
       return;
     }
 
