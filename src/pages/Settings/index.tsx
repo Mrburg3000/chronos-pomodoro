@@ -5,65 +5,74 @@ import { DefaultInput } from "../../components/DefaultInput";
 import { Heading } from "../../components/Heading";
 import { MainTemplate } from "../../templates/MainTemplate";
 import { useTaskContext } from "../../contexts/TaskContext/useTaskContext";
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import { showMessage } from "../../adapters/showMessage";
 import { TaskActionTypes } from "../../contexts/TaskContext/taskAction";
 
 export function Settings() {
   const { state, dispatch } = useTaskContext();
-  const workTimeInput = useRef<HTMLInputElement>(null);
-  const shortBreakTimeInput = useRef<HTMLInputElement>(null);
-  const longBreakTimeInput = useRef<HTMLInputElement>(null);
+
+  const [workTime, setWorkTime] = useState<number>(state.config.workTime);
+  const [shortBreakTime, setShortBreakTime] = useState<number>(state.config.shortBreakTime);
+  const [longBreakTime, setLongBreakTime] = useState<number>(state.config.longBreakTime);
 
   function handleSaveSettings(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     showMessage.dismiss();
-    
+
     const formErrors = [];
-    const workTime = Number(workTimeInput.current?.value);
-    const shortBreakTime = Number(shortBreakTimeInput.current?.value);
-    const longBreakTime = Number(longBreakTimeInput.current?.value);
+    const workTimeFromForm = Number(workTime);
+    const shortBreakTimeFromForm = Number(shortBreakTime);
+    const longBreakTimeFromForm = Number(longBreakTime);
 
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      useEffect(() => {
-        document.title = 'Configurações - Chronos Pomodoro';
-      }, []);
-      
-    
-    if (isNaN(workTime) || isNaN(shortBreakTime) || isNaN(longBreakTime)) {
-      formErrors.push('Digite apenas números para TODOS os campos');
+    if (
+      isNaN(workTimeFromForm) ||
+      isNaN(shortBreakTimeFromForm) ||
+      isNaN(longBreakTimeFromForm)
+    ) {
+      formErrors.push("Digite apenas números para TODOS os campos");
     }
 
-    if (workTime < 1 || workTime > 99) {
-      formErrors.push('Digite valores entre 1 e 99 para foco');
+    if (workTimeFromForm < 1 || workTimeFromForm > 99) {
+      formErrors.push("Digite valores entre 1 e 99 para foco");
     }
 
-    if (shortBreakTime < 1 || shortBreakTime > 30) {
-      formErrors.push('Digite valores entre 1 e 30 para descanso curto');
+    if (shortBreakTimeFromForm < 1 || shortBreakTimeFromForm > 30) {
+      formErrors.push("Digite valores entre 1 e 30 para descanso curto");
     }
 
-    if (longBreakTime < 1 || longBreakTime > 60) {
-      formErrors.push('Digite valores entre 1 e 60 para descanso longo');
+    if (longBreakTimeFromForm < 1 || longBreakTimeFromForm > 60) {
+      formErrors.push("Digite valores entre 1 e 60 para descanso longo");
     }
 
     if (formErrors.length > 0) {
-      formErrors.forEach(error => {
+      formErrors.forEach((error) => {
         showMessage.error(error);
       });
       return;
     }
 
-    dispatch ({
+    dispatch({
       type: TaskActionTypes.CHANGE_SETTINGS,
       payload: {
-        workTime,
-        shortBreakTime,
-        longBreakTime,
+        workTime: workTimeFromForm,
+        shortBreakTime: shortBreakTimeFromForm,
+        longBreakTime: longBreakTimeFromForm,
       },
     });
-    showMessage.success('Configurações salvas!');
+    showMessage.success("Configurações salvas!");
   }
+
+  useEffect(() => {
+    document.title = "Configurações - Chronos Pomodoro";
+  }, []);
+
+  useEffect(() => {
+    setWorkTime(state.config.workTime);
+    setShortBreakTime(state.config.shortBreakTime);
+    setLongBreakTime(state.config.longBreakTime);
+  }, [state.config]);
 
   return (
     <MainTemplate>
@@ -84,27 +93,27 @@ export function Settings() {
             <DefaultInput
               id="workTime"
               labelText="Foco"
-              ref={workTimeInput}
-              defaultValue={state.config.workTime}
-              type='number'
+              value={workTime}
+              onChange={(e) => setWorkTime(Number(e.target.value))}
+              type="number"
             />
           </div>
           <div className="formRow">
             <DefaultInput
               id="shortBreakTime"
               labelText="Descanso curto"
-              ref={shortBreakTimeInput}
-              defaultValue={state.config.shortBreakTime}
-              type='number'
+              value={shortBreakTime}
+              onChange={(e) => setShortBreakTime(Number(e.target.value))}
+              type="number"
             />
           </div>
           <div className="formRow">
             <DefaultInput
               id="longBreakTime"
               labelText="Descanso longo"
-              ref={longBreakTimeInput}
-              defaultValue={state.config.longBreakTime}
-              type='number'
+              value={longBreakTime}
+              onChange={(e) => setLongBreakTime(Number(e.target.value))}
+              type="number"
             />
           </div>
           <div className="formRow">
