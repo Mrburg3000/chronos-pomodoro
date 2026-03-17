@@ -38,7 +38,7 @@ O **Chronos Pomodoro** é uma aplicação web de cronômetro baseada na técnica
 
 ```bash
 # 1. Clone o repositório
-git clone https://github.com/seu-usuario/chronos-pomodoro.git
+git clone https://github.com/Mrburg3000/chronos-pomodoro.git
 
 # 2. Entre na pasta do projeto
 cd chronos-pomodoro
